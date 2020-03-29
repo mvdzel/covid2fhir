@@ -1,0 +1,103 @@
+// From 27-jan t/m 14-mrt
+{
+    "resourceType": "Bundle",
+    "type": "batch",
+    "entry": [
+        {
+            "request": {
+                "method": "GET",
+                "url": "Condition?code=840539006&_summary=count&asserted-date=2020-01-31"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "url": "Condition?code=840539006&_summary=count&asserted-date=2020-01-30"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "url": "Condition?code=840539006&_summary=count&asserted-date=2020-01-29"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "url": "Condition?code=840539006&_summary=count&asserted-date=2020-01-28"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "url": "Condition?code=840539006&_summary=count&asserted-date=2020-01-27"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "url": "Condition?code=840539006&_summary=count&asserted-date=2020-01-26"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "url": "Condition?code=840539006&_summary=count&asserted-date=2020-01-25"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "url": "Condition?code=840539006&_summary=count&asserted-date=2020-01-24"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "url": "Condition?code=840539006&_summary=count&asserted-date=2020-01-23"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "url": "Condition?code=840539006&_summary=count&asserted-date=2020-01-22"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "url": "Condition?code=840539006&_summary=count&asserted-date=2020-01-21"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "url": "Condition?code=840539006&_summary=count&asserted-date=2020-01-20"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "url": "Condition?code=840539006&_summary=count&asserted-date=2020-01-19"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "url": "Condition?code=840539006&_summary=count&asserted-date=2020-01-18"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "url": "Condition?code=840539006&_summary=count&asserted-date=2020-01-17"
+            }
+        },
+        {
+            "request": {
+                "method": "GET",
+                "url": "Condition?code=840539006&_summary=count&asserted-date=2020-01-16"
+            }
+        }
+    ]
+}

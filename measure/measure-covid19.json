@@ -1,0 +1,68 @@
+{
+    "resourceType": "Bundle",
+    "type": "transaction",
+    "entry": [
+        {
+            "fullUrl": "Library/library-codiv19",
+            "resource": {
+                "resourceType": "Library",
+                "id": "library-covid19",
+                "status": "draft",
+                "type": {
+                    "coding": [
+                        {
+                            "code": "module-definition"
+                        }
+                    ]
+                },
+                "dataRequirement": [
+                    {
+                        "type": "Patient"
+                    },
+                    {
+                        "type": "Condition",
+                        "codeFilter": [
+                            {
+                                "path": "category",
+                                "valueCode": [
+                                    "diagnosis"
+                                ]
+                            },
+                            {
+                                "path": "clinicalStatus",
+                                "valueCode": [
+                                    "confirmed"
+                                ]
+                            },
+                            {
+                                "path": "code",
+                                "valueCode": "840539006"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "request": {
+                "method": "POST",
+                "url": "Library"
+            }
+        },
+        {
+            "fullUrl": "Measure/measure-covid19",
+            "resource": {
+                "resourceType": "Measure",
+                "id": "measure-covid19",
+                "status": "draft",
+                "library": [
+                    {
+                        "reference": "Library/library-covid19"
+                    }
+                ]
+            },
+            "request": {
+                "method": "POST",
+                "url": "Measure"
+            }
+        }
+    ]
+}

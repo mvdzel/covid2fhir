@@ -15,7 +15,7 @@ fs.createReadStream('/home/michael/Downloads/latestdata.csv')
 var lineno = 0;
 function procesRow(row) {
     lineno++;
-    if (lineno > 1600) return;
+    if (lineno < 2000 || lineno > 3600) return;
 
     var fhir_bundle = {
         "resourceType": "Bundle",
@@ -33,7 +33,7 @@ function procesRow(row) {
               "value": row["ID"]
             }
         ],
-        "gender": row["gender"],
+        "gender": row["sex"],
         "address": [
           {
             "extension": [
