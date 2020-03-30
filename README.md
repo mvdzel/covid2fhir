@@ -1,4 +1,16 @@
 
+1. Find a machine readable individual case dataset source
+2. Map the CSV columns to FHIR Resources
+3. Lookup and complete codings
+4. Create a node.js script to convert the CSV to FHIR resources
+5. Bundle (transaction) the resources per individual for easy uploading into FHIR server
+5. Check the generated FHIR resources
+6a. Some count queries
+6b. Measure & ServiceDefinition does not seem to be implemented in HAPI yet :-(
+7. Create dashboard graphs
+
+
+-------------
 Source COVID-19 individual case data
 <https://github.com/beoutbreakprepared/nCoV2019/tree/master/latest_data>
 
@@ -23,6 +35,9 @@ https://r3.dhealth.usor.nl/baseDstu3/Patient?_has:Condition:subject:code=8405390
 Count matches for Patients with Condition=COVID-19
 https://r3.dhealth.usor.nl/baseDstu3/Patient?_has:Condition:subject:code=840539006&_summary=count
 
+Get only the value for the travel observations
+https://r3.dhealth.usor.nl/baseDstu3/Observation?code=443846001&_count=200&_elements=value
+
 ---------------
 Measure
 
@@ -31,3 +46,7 @@ http://hl7.org/fhir/STU3/measure-operations.html#data-requirements
 
 To get summary counts = cat3:
     URL: [base]/Measure/[id]/$evaluate-measure?reportType=population
+---------------
+Dashboard
+http://docs.smarthealthit.org/client-js/
+https://developers.google.com/chart/interactive/docs/gallery/piechart

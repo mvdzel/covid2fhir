@@ -1,0 +1,84 @@
+<html>
+<head>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript" src="fhir-client.min.js"></script>
+  <script type="text/javascript">
+    var smart = new FHIR.client({
+      //serviceUrl: 'https://cors-anywhere.herokuapp.com/http://simplifier.net/fhir/Nictiz',
+      serverUrl: 'https://r3.dhealth.usor.nl/baseDstu3',
+      auth: {
+        type: 'none'
+      },
+      credentials: 'same-origin'
+    });
+
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(fetchData);
+
+    function fetchData() {
+      smart.request("Condition?category=418799008&_count=100&_elements=code", { pageLimit: 0 }).then(drawChart);
+    }
+
+    function drawChart(data) {
+      var symptomCounts = [];
+      var tempCounts = [];
+      data.forEach(bundle => {
+        bundle.entry.forEach(entry => {
+          var symptom = entry.resource.code.text.toLowerCase();
+          if (symptom.match(/fever/)) {
+            // also count temperatures
+            var temp = symptom.match(/([\d\.]+)/g);
+            if (temp) {
+              if (tempCounts[temp]) tempCounts[temp]++;
+              else tempCounts[temp] = 1;
+            }
+            symptom = "fever";
+          }
+          else if (symptom.match(/breath/)) {
+            symptom = "breath";
+          }
+          else if (symptom.match(/cough/)) {
+            symptom = "cough";
+          }
+          if (symptomCounts[symptom]) symptomCounts[symptom]++;
+          else symptomCounts[symptom] = 1;
+        });
+      });
+
+      var symptomCountsArray = [ [ 'Symptom', 'Count' ] ];
+      Object.keys(symptomCounts).forEach(symptom => {
+        symptomCountsArray.push([ symptom, symptomCounts[symptom] ]);
+      });
+
+      var tempCountsArray = [ [ 'Temp', 'Count' ] ];
+      Object.keys(tempCounts).sort().forEach(temp => {
+        tempCountsArray.push([ temp, tempCounts[temp] ]);
+      });
+
+      var data = google.visualization.arrayToDataTable(symptomCountsArray);
+      var chart = new google.visualization.PieChart(document.getElementById('chart1'));
+      chart.draw(data, { 
+        title: 'Symptoms',
+        sliceVisibilityThreshold: .01,
+        is3D: true
+       });
+
+      var data2 = google.visualization.arrayToDataTable(tempCountsArray);
+      var chart2 = new google.visualization.LineChart(document.getElementById('chart2'));
+      chart2.draw(data2, {
+        title: 'Temp ℃', 
+        curveType: 'function', 
+        legend: { position: 'none' }
+       });
+    }          
+  </script>
+</head>
+
+<body>
+  <table><tr>
+  <td><div id="chart1" style="width: 700px; height: 500px;"></div></td>
+  <td><div id="chart2" style="width: 700px; height: 500px;"></div></td>
+  </tr></table>
+</body>
+
+</html>
