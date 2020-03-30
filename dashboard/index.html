@@ -60,7 +60,9 @@
       chart.draw(data, { 
         title: 'Symptoms',
         sliceVisibilityThreshold: .01,
-        is3D: true
+        is3D: true,
+        backgroundColor: { strokeWidth: 1 },
+        chartArea: {width: '80%', height: '80%'}
        });
 
       var data2 = google.visualization.arrayToDataTable(tempCountsArray);
@@ -68,17 +70,25 @@
       chart2.draw(data2, {
         title: 'Temp ℃', 
         curveType: 'function', 
-        legend: { position: 'none' }
+        legend: { position: 'none' },
+        backgroundColor: { strokeWidth: 1 },
+        chartArea: {width: '80%', height: '80%'}
        });
     }          
   </script>
 </head>
 
 <body>
+  <h1>COVID-19 Symptoms Dashboard</h1>
   <table><tr>
   <td><div id="chart1" style="width: 700px; height: 500px;"></div></td>
   <td><div id="chart2" style="width: 700px; height: 500px;"></div></td>
   </tr></table>
+  <ul>
+    <li>Raw data source <a href="https://github.com/beoutbreakprepared/nCoV2019/tree/master/latest_data">https://github.com/beoutbreakprepared/nCoV2019/tree/master/latest_data</a></li>
+    <li>FHIR data source <a href="https://dhealth.usor.nl/">https://dhealth.usor.nl/</a></li>
+    <li>Source code <a href="https://github.com/mvdzel/covid2fhir">https://github.com/mvdzel/covid2fhir</a></li>
+  </ul>
 </body>
 
 </html>
