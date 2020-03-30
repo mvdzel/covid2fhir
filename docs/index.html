@@ -3,9 +3,11 @@
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript" src="fhir-client.min.js"></script>
   <script type="text/javascript">
+    // Don't know why, but somehome when published on gitpages the https for dhealth is changed to http...
+    // Workaround by using the cors-anywhere service.
     var smart = new FHIR.client({
-      //serviceUrl: 'https://cors-anywhere.herokuapp.com/http://simplifier.net/fhir/Nictiz',
-      serverUrl: 'https://r3.dhealth.usor.nl/baseDstu3',
+      serverUrl: 'https://cors-anywhere.herokuapp.com/https://r3.dhealth.usor.nl/baseDstu3',
+      //serverUrl: 'https://r3.dhealth.usor.nl/baseDstu3',
       auth: {
         type: 'none'
       },
@@ -87,6 +89,7 @@
   <ul>
     <li>Raw data source <a href="https://github.com/beoutbreakprepared/nCoV2019/tree/master/latest_data">https://github.com/beoutbreakprepared/nCoV2019/tree/master/latest_data</a></li>
     <li>FHIR data source <a href="https://dhealth.usor.nl/">https://dhealth.usor.nl/</a></li>
+    <li>FHIR-client <a href="http://docs.smarthealthit.org/client-js/">http://docs.smarthealthit.org/client-js/</a></li>
     <li>Source code <a href="https://github.com/mvdzel/covid2fhir">https://github.com/mvdzel/covid2fhir</a></li>
   </ul>
 </body>
