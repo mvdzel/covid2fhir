@@ -5,18 +5,23 @@
   <script type="text/javascript">
     var smart = new FHIR.client({
       //serverUrl: 'https://cors-anywhere.herokuapp.com/https://r3.dhealth.usor.nl/baseDstu3',
-      serverUrl: 'http://r3.dhealth.usor.nl/baseDstu3',
+      serverUrl: 'https://r3.dhealth.usor.nl/baseDstu3',
       auth: {
         type: 'none'
       },
       credentials: 'same-origin'
     });
 
-    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.load('current', { 
+      'packages': ['corechart', 'geochart'],
+      'mapsApiKey': 'AIzaSyDUJ-4R9qEYDL8Ce9_B1w764FMxeuGy0e0'
+     });
     google.charts.setOnLoadCallback(fetchData);
 
     function fetchData() {
       smart.request("Condition?category=418799008&_count=100&_elements=code", { pageLimit: 0 }).then(drawChart);
+      //smart.request("Observation?code=443846001&_count=100&_elements=value", { pageLimit: 0 }).then(drawMap);
+      smart.request("Patient?_has:Condition:subject:code=840539006&_count=100&_elements=address", { pageLimit: 0 }).then(drawMap);
     }
 
     function drawChart(data) {
@@ -62,7 +67,7 @@
         sliceVisibilityThreshold: .01,
         is3D: true,
         backgroundColor: { strokeWidth: 1 },
-        chartArea: {width: '80%', height: '80%'}
+        chartArea: {width: '90%', height: '80%'}
        });
 
       var data2 = google.visualization.arrayToDataTable(tempCountsArray);
@@ -72,18 +77,44 @@
         curveType: 'function', 
         legend: { position: 'none' },
         backgroundColor: { strokeWidth: 1 },
-        chartArea: {width: '80%', height: '80%'}
+        chartArea: {width: '90%', height: '80%'}
        });
-    }          
+    }
+    
+    function drawMap(data) {
+      var counts = [];
+      data.forEach(bundle => {
+        bundle.entry.forEach(entry => {
+          var place = entry.resource.address[0].country;
+          if (counts[place]) counts[place]++;
+          else counts[place] = 1;
+        });
+      });
+      //console.log(counts);
+
+      var countsArray = [ [ 'Place', 'Count' ] ];
+      Object.keys(counts).forEach(place => {
+        countsArray.push([ place, counts[place] ]);
+      });
+      var data = google.visualization.arrayToDataTable(countsArray);
+      var options = { 
+        backgroundColor: { strokeWidth: 1 }
+       };
+      var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+      chart.draw(data, options);
+    }
   </script>
 </head>
 
 <body>
   <h1>COVID-19 Symptoms Dashboard</h1>
   <table><tr>
-  <td><div id="chart1" style="width: 700px; height: 500px;"></div></td>
-  <td><div id="chart2" style="width: 700px; height: 500px;"></div></td>
+  <td><div id="chart1" style="width: 650px; height: 500px;"></div></td>
+  <td><div id="chart2" style="width: 650px; height: 500px;"></div></td>
   </tr></table>
+
+  <div id="regions_div" style="width: 900px; height: 500px;"></div>
+
   <ul>
     <li>Raw data source <a href="https://github.com/beoutbreakprepared/nCoV2019/tree/master/latest_data">https://github.com/beoutbreakprepared/nCoV2019/tree/master/latest_data</a></li>
     <li>FHIR data source <a href="https://dhealth.usor.nl/">https://dhealth.usor.nl/</a></li>
