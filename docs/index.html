@@ -20,6 +20,8 @@
 
     function fetchData() {
       smart.request("Condition?category=418799008&_count=100&_elements=code", { pageLimit: 0 }).then(drawChart);
+      smart.request("Encounter?_has:Condition:subject:code=840539006&_count=100&date=2020&_elements=period", { pageLimit: 0 }).then(drawSomething);
+
       //smart.request("Observation?code=443846001&_count=100&_elements=value", { pageLimit: 0 }).then(drawMap);
       smart.request("Patient?_has:Condition:subject:code=840539006&_count=100&_elements=address", { pageLimit: 0 }).then(drawMap);
     }
@@ -40,7 +42,7 @@
             symptom = "fever";
           }
           else if (symptom.match(/breath/)) {
-            symptom = "breath";
+            symptom = "dyspnea";
           }
           else if (symptom.match(/cough/)) {
             symptom = "cough";
@@ -66,8 +68,8 @@
         title: 'Symptoms',
         sliceVisibilityThreshold: .01,
         is3D: true,
-        backgroundColor: { strokeWidth: 1 },
-        chartArea: {width: '90%', height: '80%'}
+        backgroundColor: { strokeWidth: 3 },
+        chartArea: {width: '95%', height: '90%'}
        });
 
       var data2 = google.visualization.arrayToDataTable(tempCountsArray);
@@ -76,7 +78,7 @@
         title: 'Temp ℃', 
         curveType: 'function', 
         legend: { position: 'none' },
-        backgroundColor: { strokeWidth: 1 },
+        backgroundColor: { strokeWidth: 3 },
         chartArea: {width: '90%', height: '80%'}
        });
     }
@@ -98,22 +100,58 @@
       });
       var data = google.visualization.arrayToDataTable(countsArray);
       var options = { 
-        backgroundColor: { strokeWidth: 1 }
+        backgroundColor: { strokeWidth: 3 }
        };
       var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
       chart.draw(data, options);
+    }
+
+    function drawSomething(data) {
+      var counts = [];
+      data.forEach(bundle => {
+        bundle.entry.forEach(entry => {
+          if (entry.resource.period) {
+            var start = new Date( entry.resource.period.start);
+            var end = new Date( entry.resource.period.end);
+            var days = (end.getTime() - start.getTime()) / (24 * 60 * 60 * 1000);
+            if (counts[days]) counts[days]++;
+            else counts[days] = 1;
+            //console.log(days + "  " + start.toDateString() + " - " + end.toDateString());
+          }
+        });
+      });
+
+      var countsArray = [ [ 'Hospitalized', 'Days' ] ];
+      Object.keys(counts).forEach(days => {
+        countsArray.push([ days, counts[days] ]);
+      });
+      var data = google.visualization.arrayToDataTable(countsArray);
+      var chart = new google.visualization.PieChart(document.getElementById('chart3'));
+      chart.draw(data, { 
+        title: 'Days hospitalized',
+        legend: 'none',
+        pieSliceText: 'label',
+        pieHole: 0.4,        
+        backgroundColor: { strokeWidth: 3 },
+        chartArea: {width: '90%', height: '90%'}
+       });
     }
   </script>
 </head>
 
 <body>
   <h1>COVID-19 Symptoms Dashboard</h1>
-  <table><tr>
-  <td><div id="chart1" style="width: 650px; height: 500px;"></div></td>
-  <td><div id="chart2" style="width: 650px; height: 500px;"></div></td>
-  </tr></table>
+  <table>
+    <tr>
+      <td><div id="chart1" style="width: 650px; height: 500px;"></div></td>
+      <td><div id="chart2" style="width: 650px; height: 500px;"></div></td>
+    </tr>
+    <tr>
+      <td><div id="chart3" style="width: 650px; height: 500px;"></div></td>
+      <td><div id="regions_div" style="width: 650px; height: 500px;"></div>Patient home country</td>
+    </tr>
+  </table>
 
-  <div id="regions_div" style="width: 900px; height: 500px;"></div>
 
   <ul>
     <li>Raw data source <a href="https://github.com/beoutbreakprepared/nCoV2019/tree/master/latest_data">https://github.com/beoutbreakprepared/nCoV2019/tree/master/latest_data</a></li>
