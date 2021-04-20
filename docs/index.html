@@ -1,11 +1,13 @@
 <html>
 <head>
+  <title>COVID 2 FHIR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script type="text/javascript" src="fhir-client.min.js"></script>
   <script type="text/javascript">
     var smart = new FHIR.client({
       //serverUrl: 'https://cors-anywhere.herokuapp.com/https://r3.dhealth.usor.nl/baseDstu3',
-      serverUrl: 'https://r3.dhealth.usor.nl/baseDstu3',
+      serverUrl: 'https://dhealth.usor.nl:4003/hapi-fhir-jpaserver/fhir',
       auth: {
         type: 'none'
       },
@@ -27,15 +29,19 @@
     }
 
     function drawChart(data) {
+      var numberOfSymptomEntries = 0;
+      var numberOfTempEntries = 0;
       var symptomCounts = [];
       var tempCounts = [];
       data.forEach(bundle => {
         bundle.entry.forEach(entry => {
+          numberOfSymptomEntries++;
           var symptom = entry.resource.code.text.toLowerCase();
           if (symptom.match(/fever/)) {
             // also count temperatures
             var temp = symptom.match(/([\d\.]+)/g);
             if (temp) {
+              numberOfTempEntries++;
               if (tempCounts[temp]) tempCounts[temp]++;
               else tempCounts[temp] = 1;
             }
@@ -65,17 +71,19 @@
       var data = google.visualization.arrayToDataTable(symptomCountsArray);
       var chart = new google.visualization.PieChart(document.getElementById('chart1'));
       chart.draw(data, { 
-        title: 'Symptoms',
+        title: 'Symptoms (' + numberOfSymptomEntries + ')',
+        titleTextStyle: { fontSize: 24 },
         sliceVisibilityThreshold: .01,
         is3D: true,
         backgroundColor: { strokeWidth: 3 },
-        chartArea: {width: '95%', height: '90%'}
+        chartArea: {width: '95%', height: '80%'}
        });
 
       var data2 = google.visualization.arrayToDataTable(tempCountsArray);
       var chart2 = new google.visualization.LineChart(document.getElementById('chart2'));
       chart2.draw(data2, {
-        title: 'Temp ℃', 
+        title: 'Temp ℃ (' + numberOfTempEntries + '/' + numberOfSymptomEntries + ')', 
+        titleTextStyle: { fontSize: 24 },
         curveType: 'function', 
         legend: { position: 'none' },
         backgroundColor: { strokeWidth: 3 },
@@ -107,10 +115,14 @@
     }
 
     function drawSomething(data) {
+      var numberOfEntries = 0;
+      var numberOfEntriesUsed = 0;
       var counts = [];
       data.forEach(bundle => {
         bundle.entry.forEach(entry => {
+          numberOfEntries++;
           if (entry.resource.period) {
+            numberOfEntriesUsed++;
             var start = new Date( entry.resource.period.start);
             var end = new Date( entry.resource.period.end);
             var days = (end.getTime() - start.getTime()) / (24 * 60 * 60 * 1000);
@@ -128,12 +140,14 @@
       var data = google.visualization.arrayToDataTable(countsArray);
       var chart = new google.visualization.PieChart(document.getElementById('chart3'));
       chart.draw(data, { 
-        title: 'Days hospitalized',
+        title: 'Days hospitalized (' + numberOfEntriesUsed + '/' + numberOfEntries + ')',
+        //titleTextStyle: { fontSize: 24 },
+        fontSize: 24,
         legend: 'none',
         pieSliceText: 'label',
         pieHole: 0.4,        
         backgroundColor: { strokeWidth: 3 },
-        chartArea: {width: '90%', height: '90%'}
+        chartArea: {width: '70%', height: '70%'}
        });
     }
   </script>
@@ -148,7 +162,7 @@
     </tr>
     <tr>
       <td><div id="chart3" style="width: 650px; height: 500px;"></div></td>
-      <td><div id="regions_div" style="width: 650px; height: 500px;"></div>Patient home country</td>
+      <td><div id="regions_div" style="width: 650px; height: 500px;"></div>Patients per home country</td>
     </tr>
   </table>
 

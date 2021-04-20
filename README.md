@@ -59,3 +59,8 @@ To get summary counts = cat3:
 
 http://docs.smarthealthit.org/client-js/
 https://developers.google.com/chart/interactive/docs/gallery/piechart
+
+# Logica Impl Guide
+https://github.com/logicahealth/covid-19/
+Symptoms valueset SCT codes
+https://covid-19-ig.logicahealth.org/ValueSet-covid19-signs-1nd-symptoms-value-set.html

@@ -2,6 +2,8 @@ const csv = require('csv-parser');
 const fs = require('fs');
 
 const currentyear = new Date().getFullYear();
+const today = new Date().toISOString();
+
 
 fs.createReadStream('/home/michael/Downloads/latestdata.csv')
     .pipe(csv())
@@ -27,6 +29,16 @@ function procesRow(row) {
     var fhir_patient = {
         "resourceType": "Patient",
         "id": patientId,
+        "meta": {
+            "versionId": "1",
+            "lastUpdated": today,
+            "tag": [
+              {
+                "system": "https://r3.dhealth.usor.nl/tags",
+                "code": "covid-20-mar-2020"
+              }
+            ]
+        },        
         "identifier": [
             {
               "system": "https://github.com/beoutbreakprepared/nCoV2019/tree/master/latest_data",
